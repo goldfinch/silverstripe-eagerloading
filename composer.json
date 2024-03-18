@@ -1,5 +1,5 @@
 {
-    "name": "gurucomkz/eagerloading",
+    "name": "goldfinch/eagerloading",
     "description": "Eager loading for SilverStripe 4",
     "type": "silverstripe-vendormodule",
     "keywords": [

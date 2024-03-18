@@ -17,7 +17,7 @@ The module takes advantage of `DataList::getGenerator()` to query for and attach
 
 ## Installation
 ```
-composer require gurucomkz/eagerloading
+composer require goldfinch/eagerloading
 ```
 Every DataObject that has has_one/many_many/belongs_many_many which you wish to have eagerloaded must include `EagerLoaderMultiAccessor` (see below).
 ## Features
