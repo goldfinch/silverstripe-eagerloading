@@ -123,7 +123,29 @@ class EagerLoadedDataList extends DataList
             $dep = $depSeq[0];
             $fields[] = "\"{$dep}ID\"";
         }
-        $table = DataObject::getSchema()->tableName($this->dataClass);
+
+        // +
+        $dataClass = $this->dataClass;
+
+        $cfg = Config::inst()->get(__CLASS__, 'replace_class');
+
+        if ($cfg && isset($cfg[$dataClass]) && count($cfg[$dataClass])) {
+
+            foreach ($fields as $f) {
+
+                if ($f != 'ID') {
+                    $ff = str_replace('"', '', $f);
+
+                    if (isset($cfg[$dataClass][$ff])) {
+                        $dataClass = $cfg[$dataClass][$ff];
+                        break;
+                    }
+                }
+            }
+        }
+        // -
+
+        $table = DataObject::getSchema()->tableName($dataClass);
         $data = new SQLSelect($fields, '"' . $table . '"', ['"ID" IN (' . implode(',', $ids) . ')']);
         $data = Utils::EnsureArray($data->execute(), 'ID');
 
@@ -171,7 +193,23 @@ class EagerLoadedDataList extends DataList
             } else {
                 $localNameInDep = $localClassTail;
             }
+
             $depKey = "{$localNameInDep}ID";
+
+            // +
+            $cfg = Config::inst()->get(__CLASS__, 'replace_key');
+
+            if ($cfg && isset($cfg[$dep]) && count($cfg[$dep])) {
+
+                foreach ($cfg[$dep] as $k => $f) {
+                    if ($depKey == $k) {
+                        $depKey = $f;
+                        break;
+                    }
+                }
+            }
+            // -
+
             $descriptor = [
                 'class' => $depClass,
                 'remoteRelation' => $localNameInDep,
